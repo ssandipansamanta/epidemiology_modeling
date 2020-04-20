@@ -14,7 +14,7 @@ N = 121924973
 library(deSolve)
 library(rgenoud)
 library(parallel)
-
+library(plotly)
  
 #' @Model_Formulation:
 #' 
@@ -94,7 +94,7 @@ opt_output <-rgenoud::genoud(fn=obj_function,
                               starting.values=initial_param,
                               MemoryMatrix=TRUE,
                               Domains=limit, default.domains=NULL, solution.tolerance=1E-2,
-                              gr=NULL, boundary.enforcement=2, lexical=FALSE, gradient.check=FALSE,
+                              gr=NULL, boundary.enforcement=0, lexical=FALSE, gradient.check=FALSE,
                               BFGS=TRUE, data.type.int=FALSE, hessian=FALSE,
                               unif.seed=123, int.seed=456,
                               print.level=1,
@@ -111,3 +111,17 @@ stopCluster(cl)
 
 final_params <- opt_output$par
 
+#' @Simularion:
+#' 
+
+parameters <- c( beta = final_params[1], delta = final_params[2], alpha = final_params[3], gamma=final_params[4], rho=final_params[5])
+times <- seq(0, 300, by = 1)
+plot_output <- as.data.frame(deSolve::ode(y = initial_state, times = times, func = SEIRD_model, parms = parameters))
+
+fig <- plotly::plot_ly(plot_output, x = ~time) 
+fig <- fig %>% add_trace(y = ~S, name = 'Susceptibles',mode = 'lines') 
+fig <- fig %>% add_trace(y = ~E, name = 'Exposed', mode = 'lines') 
+fig <- fig %>% add_trace(y = ~I, name = 'Infecteds', mode = 'lines')
+fig <- fig %>% add_trace(y = ~R, name = 'Recovereds', mode = 'lines') 
+fig <- fig %>% add_trace(y = ~D, name = 'Deaths', mode = 'lines')
+fig
