@@ -1,9 +1,9 @@
 rm(list=ls(all=TRUE))
 gc()
 
-path = 'C:/Users/samantas/Documents/MyLearning/Epidemiology_modeling/project'
-file_name = 'input_data_all_india'
-initial_param_file_name = 'initial_params_bounds'
+path = 'Path of root Directory'
+file_name = 'Input file name'
+initial_param_file_name = 'initial params bounds'
 
 N = 8000 #1353890423
 
